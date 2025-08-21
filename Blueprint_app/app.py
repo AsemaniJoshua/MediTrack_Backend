@@ -7,14 +7,12 @@ from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_login import LoginManager
 
-from Blueprint_app.models import User
-
-
 # Load environment variables from the .env file
 load_dotenv()
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
+login_manager = LoginManager()
 
 def create_app():
     app = Flask(__name__, template_folder="templates")
@@ -26,9 +24,10 @@ def create_app():
     bcrypt.init_app(app)
     
     # Initializing Login Manager
-    login_manager = LoginManager()
+    
     login_manager.init_app(app)
     
+    from Blueprint_app.models import User
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
