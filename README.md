@@ -2,6 +2,8 @@
 
 Welcome to the mediTrack backend API documentation. This guide provides all the necessary information for a frontend developer to interact with the API endpoints.
 
+Created By Joshua Asemani
+
 > **Note:** All API endpoints are prefixed with `/api/v1`.
 
 ---
