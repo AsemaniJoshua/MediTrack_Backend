@@ -1,4 +1,6 @@
 from flask import Flask
+import os
+from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
@@ -7,12 +9,16 @@ from flask_login import LoginManager
 
 from Blueprint_app.models import User
 
+
+# Load environment variables from the .env file
+load_dotenv()
+
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 
 def create_app():
     app = Flask(__name__, template_folder="templates")
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///./blueprint.db"
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
     app.secret_key = "Some Key"
     
     # db initialization

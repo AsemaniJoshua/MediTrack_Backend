@@ -1,19 +1,53 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim
+# Use the official Python image
 
-# Set the working directory to /app inside the container
-WORKDIR /app
+FROM python:3.11-slim
 
-# Copy the requirements file and install the dependencies
-# This leverages Docker's layer caching to speed up builds
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire project folder from your local machine to the container
+
+# Set working directory
+
+WORKDIR /flask-app
+
+
+
+# Cpoying requirements.txt to the Docker Image
+
+COPY requirements.txt requirements.txt
+
+
+
+# Installing dependencies from requirements.txt in Docker Image
+
+RUN pip install -r requirements.txt
+
+
+
+# Copying all files from the current directory to the Docker Image
+
 COPY . .
 
-# Expose port 5000, as defined in run.py, to the outside world
-EXPOSE 5000
 
-# Run the Flask application
+
+# Navigating to the Blueprint_app directory to run commands to create the database
+
+WORKDIR /flask-app/Blueprint_app
+
+
+
+# Running the command to create the database
+
+RUN flask db init
+
+RUN flask db migrate
+
+RUN flask db upgrade
+
+
+
+# Moving back to your main working directory
+
+WORKDIR /flask-app
+
+
+
 CMD ["python", "run.py"]
