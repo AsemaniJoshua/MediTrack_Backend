@@ -7,3 +7,4 @@ Flask-Login
 mysql-connector-python
 PyMySQL
 python-dotenv
+cryptography
