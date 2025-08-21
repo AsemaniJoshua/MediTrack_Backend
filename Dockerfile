@@ -36,11 +36,11 @@ WORKDIR /flask-app/Blueprint_app
 
 # Running the command to create the database
 
-RUN flask db init
+# RUN flask db init
 
-RUN flask db migrate
+# RUN flask db migrate
 
-RUN flask db upgrade
+# RUN flask db upgrade
 
 
 
