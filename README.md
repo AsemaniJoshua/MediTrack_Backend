@@ -4,7 +4,7 @@ Welcome to the mediTrack backend API documentation. This guide provides all the 
 
 Created By Joshua Asemani
 
-> **Note:** All API endpoints are prefixed with `/api/v1`.
+> **Note:** All API endpoints are prefixed with `https://meditrack-backend-fplg.onrender.com`.
 
 ---
 
@@ -37,7 +37,7 @@ Created By Joshua Asemani
 ## Users Endpoints
 
 ### `POST /api/v1/users/register`
-**Description:** Creates a new user account. The `photo` field should contain a Base64-encoded image string.
+**Description:** Creates a new user account.
 
 **Request Body:**
 ```json
@@ -45,7 +45,6 @@ Created By Joshua Asemani
     "name": "string",
     "email": "string",
     "password": "string",
-    "photo": "Base64 string",
     "emergencyContact": "string"
 }
 ```
@@ -81,6 +80,20 @@ Created By Joshua Asemani
 
 ---
 
+### `POST /api/v1/users/logout`
+**Description:** Logs out the current user.
+
+**Request Body:** None
+
+**Response Body:**
+```json
+{
+    "message": "Logged out successfully"
+}
+```
+
+---
+
 ### `GET /api/v1/users/<user_id>`
 **Description:** Retrieves a single user's details by their ID.
 
@@ -102,13 +115,12 @@ Created By Joshua Asemani
 ---
 
 ### `PATCH /api/v1/users/<user_id>`
-**Description:** Updates an existing user's details. Only include the fields you wish to update. The `photo` field accepts a Base64-encoded image string.
+**Description:** Updates an existing user's details. Only include the fields you wish to update.
 
 **Request Body:**
 ```json
 {
     "name": "string",
-    "photo": "Base64 string",
     "emergencyContact": "string"
 }
 ```
@@ -125,7 +137,7 @@ Created By Joshua Asemani
 ## Medications Endpoints
 
 ### `POST /api/v1/medications`
-**Description:** Adds a new medication for a user. The `photo` field should contain a Base64-encoded image string.
+**Description:** Adds a new medication for a user.
 
 **Request Body:**
 ```json
@@ -136,8 +148,7 @@ Created By Joshua Asemani
     "frequency": "string",
     "startDate": "YYYY-MM-DD",
     "endDate": "YYYY-MM-DD",
-    "time": "string",
-    "photo": "Base64 string"
+    "time": "string"
 }
 ```
 
@@ -176,15 +187,14 @@ Created By Joshua Asemani
 ---
 
 ### `PATCH /api/v1/medications/<medication_id>`
-**Description:** Updates a specific medication. Only include the fields you wish to update. The `photo` field accepts a Base64-encoded image string.
+**Description:** Updates a specific medication. Only include the fields you wish to update.
 
 **Request Body:**
 ```json
 {
     "name": "string",
     "dosage": "string",
-    "frequency": "string",
-    "photo": "Base64 string"
+    "frequency": "string"
 }
 ```
 
@@ -211,6 +221,29 @@ Created By Joshua Asemani
 
 ---
 
+### `GET /api/v1/medications/allmedications`
+**Description:** Retrieves all medications for all users.
+
+**Request Body:** None
+
+**Response Body:**
+```json
+[
+    {
+        "id": 1,
+        "userId": 1,
+        "name": "string",
+        "dosage": "string",
+        "frequency": "string",
+        "startDate": "YYYY-MM-DD",
+        "endDate": "YYYY-MM-DD",
+        "time": "string"
+    }
+]
+```
+
+---
+
 ## Appointments Endpoints
 
 ### `POST /api/v1/appointments`
@@ -224,8 +257,7 @@ Created By Joshua Asemani
     "time": "string",
     "location": "string",
     "doctor": "string",
-    "notes": "string",
-    "status": "string"
+    "notes": "string"
 }
 ```
 
@@ -254,8 +286,7 @@ Created By Joshua Asemani
         "time": "string",
         "location": "string",
         "doctor": "string",
-        "notes": "string",
-        "status": "string"
+        "notes": "string"
     }
 ]
 ```
@@ -272,8 +303,7 @@ Created By Joshua Asemani
     "time": "string",
     "location": "string",
     "doctor": "string",
-    "notes": "string",
-    "status": "string"
+    "notes": "string"
 }
 ```
 
@@ -296,6 +326,28 @@ Created By Joshua Asemani
 {
     "message": "Appointment deleted successfully"
 }
+```
+
+---
+
+### `GET /api/v1/appointments/allappointments`
+**Description:** Retrieves all appointments for all users.
+
+**Request Body:** None
+
+**Response Body:**
+```json
+[
+    {
+        "id": 1,
+        "userId": 1,
+        "date": "YYYY-MM-DD",
+        "time": "string",
+        "location": "string",
+        "doctor": "string",
+        "notes": "string"
+    }
+]
 ```
 
 ---
