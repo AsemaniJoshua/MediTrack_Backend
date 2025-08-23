@@ -8,8 +8,8 @@ import base64
 from flask_login import login_required, current_user
 
 medications = Blueprint('medications', __name__)
-MEDICATION_UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads', 'medication_photos')
-os.makedirs(MEDICATION_UPLOAD_FOLDER, exist_ok=True)
+# MEDICATION_UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads', 'medication_photos')
+# os.makedirs(MEDICATION_UPLOAD_FOLDER, exist_ok=True)
 
 def save_base64_image(base64_string, upload_folder):
     if not base64_string:
@@ -33,7 +33,7 @@ def save_base64_image(base64_string, upload_folder):
 @login_required
 def add_medication():
     data = request.get_json()
-    photo_filename = save_base64_image(data.get('photo'), MEDICATION_UPLOAD_FOLDER)
+    # photo_filename = save_base64_image(data.get('photo'), MEDICATION_UPLOAD_FOLDER)
 
     new_medication = Medication(
         user_id=current_user.id,
@@ -43,7 +43,7 @@ def add_medication():
         start_date=datetime.strptime(data['startDate'], '%Y-%m-%d').date(),
         end_date=datetime.strptime(data['endDate'], '%Y-%m-%d').date(),
         time=data['time'],
-        photo_filename=photo_filename
+        # photo_filename=photo_filename
     )
     db.session.add(new_medication)
     db.session.commit()
@@ -66,7 +66,7 @@ def get_user_medications(user_id):
             'startDate': med.start_date.isoformat(),
             'endDate': med.end_date.isoformat(),
             'time': med.time,
-            'photoFilename': med.photo_filename
+            # 'photoFilename': med.photo_filename
         })
     return jsonify(output), 200
 
@@ -78,10 +78,10 @@ def update_medication(medication_id):
         return jsonify({'message': 'Unauthorized access'}), 403
     data = request.get_json()
     
-    if data.get('photo'):
-        if med.photo_filename and os.path.exists(os.path.join(MEDICATION_UPLOAD_FOLDER, med.photo_filename)):
-            os.remove(os.path.join(MEDICATION_UPLOAD_FOLDER, med.photo_filename))
-        med.photo_filename = save_base64_image(data.get('photo'), MEDICATION_UPLOAD_FOLDER)
+    # if data.get('photo'):
+    #     if med.photo_filename and os.path.exists(os.path.join(MEDICATION_UPLOAD_FOLDER, med.photo_filename)):
+    #         os.remove(os.path.join(MEDICATION_UPLOAD_FOLDER, med.photo_filename))
+    #     med.photo_filename = save_base64_image(data.get('photo'), MEDICATION_UPLOAD_FOLDER)
     
     med.name = data.get('name', med.name)
     med.dosage = data.get('dosage', med.dosage)
@@ -95,8 +95,40 @@ def delete_medication(medication_id):
     med = Medication.query.get_or_404(medication_id)
     if med.user_id != current_user.id:
         return jsonify({'message': 'Unauthorized access'}), 403
-    if med.photo_filename and os.path.exists(os.path.join(MEDICATION_UPLOAD_FOLDER, med.photo_filename)):
-        os.remove(os.path.join(MEDICATION_UPLOAD_FOLDER, med.photo_filename))
+    # if med.photo_filename and os.path.exists(os.path.join(MEDICATION_UPLOAD_FOLDER, med.photo_filename)):
+    #     os.remove(os.path.join(MEDICATION_UPLOAD_FOLDER, med.photo_filename))
     db.session.delete(med)
     db.session.commit()
     return jsonify({'message': 'Medication deleted successfully'}), 204
+
+@medications.route('/allmedications', methods=['GET'])
+@login_required
+def get_all_medications():
+    """
+    Endpoint to get all medications for all users.
+    """
+    try:
+        all_medications = Medication.query.all()
+        if not all_medications:
+            return jsonify({"success": True, "message": "No medications found.", "medications": []}), 200
+
+        medications_list = []
+        for medication in all_medications:
+            medication_data = {
+                "id": medication.id,
+                "userId": medication.userId,
+                "name": medication.name,
+                "dosage": medication.dosage,
+                "frequency": medication.frequency,
+                "startDate": medication.startDate.strftime('%Y-%m-%d'),
+                "endDate": medication.endDate.strftime('%Y-%m-%d'),
+                "time": medication.time
+            }
+            medications_list.append(medication_data)
+
+        return jsonify({"success": True, "message": "Medications retrieved successfully.", "medications": medications_list}), 200
+    
+    except Exception as e:
+        return jsonify({"success": False, "message": f"An error occurred: {str(e)}", "medications": []}), 500
+
+

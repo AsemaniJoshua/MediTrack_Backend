@@ -18,7 +18,7 @@ def add_appointment():
         location=data['location'],
         doctor=data['doctor'],
         notes=data.get('notes'),
-        status=data['status']
+        # status=data['status']
     )
     db.session.add(new_appointment)
     db.session.commit()
@@ -40,7 +40,7 @@ def get_user_appointments(user_id):
             'location': appt.location,
             'doctor': appt.doctor,
             'notes': appt.notes,
-            'status': appt.status
+            # 'status': appt.status
         })
     return jsonify(output), 200
 
@@ -56,7 +56,7 @@ def update_appointment(appointment_id):
     appt.location = data['location']
     appt.doctor = data['doctor']
     appt.notes = data['notes']
-    appt.status = data['status']
+    # appt.status = data['status']
     db.session.commit()
     return jsonify({'message': 'Appointment updated successfully'}), 200
 
@@ -69,3 +69,33 @@ def delete_appointment(appointment_id):
     db.session.delete(appt)
     db.session.commit()
     return jsonify({'message': 'Appointment deleted successfully'}), 204
+
+
+@appointments.route('/allappointments', methods=['GET'])
+@login_required
+def get_all_appointments():
+    """
+    Endpoint to get all appointments for all users.
+    """
+    try:
+        all_appointments = Appointment.query.all()
+        if not all_appointments:
+            return jsonify({"success": True, "message": "No appointments found.", "appointments": []}), 200
+
+        appointments_list = []
+        for appointment in all_appointments:
+            appointment_data = {
+                "id": appointment.id,
+                "userId": appointment.userId,
+                "date": appointment.date.strftime('%Y-%m-%d'),
+                "time": appointment.time,
+                "location": appointment.location,
+                "doctor": appointment.doctor,
+                "notes": appointment.notes
+            }
+            appointments_list.append(appointment_data)
+
+        return jsonify({"success": True, "message": "Appointments retrieved successfully.", "appointments": appointments_list}), 200
+
+    except Exception as e:
+        return jsonify({"success": False, "message": f"An error occurred: {str(e)}", "appointments": []}), 500

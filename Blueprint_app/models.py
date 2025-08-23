@@ -29,7 +29,7 @@ class Medication(db.Model):
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
     time = db.Column(db.String(255), nullable=False)
-    photo_filename = db.Column(db.String(255), nullable=True)
+    # photo_filename = db.Column(db.String(255), nullable=True)
 
 class Appointment(db.Model):
     __tablename__ = 'appointments'
@@ -40,7 +40,7 @@ class Appointment(db.Model):
     location = db.Column(db.String(255), nullable=False)
     doctor = db.Column(db.String(255), nullable=False)
     notes = db.Column(db.Text, nullable=True)
-    status = db.Column(db.String(50), nullable=False)
+    # status = db.Column(db.String(50), nullable=False)
 
 class MedicalRecord(db.Model):
     __tablename__ = 'medical_records'

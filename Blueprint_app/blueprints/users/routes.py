@@ -7,8 +7,8 @@ import base64
 from flask_login import login_user, logout_user, login_required, current_user
 
 users = Blueprint('users', __name__)
-USER_UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads', 'user_photos')
-os.makedirs(USER_UPLOAD_FOLDER, exist_ok=True)
+# USER_UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads', 'user_photos')
+# os.makedirs(USER_UPLOAD_FOLDER, exist_ok=True)
 
 def save_base64_image(base64_string, upload_folder):
     if not base64_string:
@@ -35,13 +35,13 @@ def register():
         return jsonify({'message': 'Missing email or password'}), 400
 
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    photo_filename = save_base64_image(data.get('photo'), USER_UPLOAD_FOLDER)
+    # photo_filename = save_base64_image(data.get('photo'), USER_UPLOAD_FOLDER)
 
     new_user = User(
         name=data.get('name'),
         email=data['email'],
         password_hash=hashed_password,
-        photo_filename=photo_filename,
+        # photo_filename=photo_filename,
         emergency_contact=data.get('emergencyContact')
     )
 
@@ -78,7 +78,7 @@ def get_user(user_id):
         'id': user.id,
         'name': user.name,
         'email': user.email,
-        'photoFilename': user.photo_filename,
+        # 'photoFilename': user.photo_filename,
         'emergencyContact': user.emergency_contact,
         'createdAt': user.created_at.isoformat(),
         'updatedAt': user.updated_at.isoformat()
@@ -92,13 +92,15 @@ def update_user(user_id):
     user = User.query.get_or_404(user_id)
     data = request.get_json()
 
-    if data.get('photo'):
-        if user.photo_filename and os.path.exists(os.path.join(USER_UPLOAD_FOLDER, user.photo_filename)):
-            os.remove(os.path.join(USER_UPLOAD_FOLDER, user.photo_filename))
-        user.photo_filename = save_base64_image(data.get('photo'), USER_UPLOAD_FOLDER)
+    # if data.get('photo'):
+    #     if user.photo_filename and os.path.exists(os.path.join(USER_UPLOAD_FOLDER, user.photo_filename)):
+    #         os.remove(os.path.join(USER_UPLOAD_FOLDER, user.photo_filename))
+    #     user.photo_filename = save_base64_image(data.get('photo'), USER_UPLOAD_FOLDER)
     
     user.name = data.get('name', user.name)
     user.emergency_contact = data.get('emergencyContact', user.emergency_contact)
     
     db.session.commit()
     return jsonify({'message': 'User updated successfully'}), 200
+
+
